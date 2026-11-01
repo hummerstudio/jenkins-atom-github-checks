@@ -1,0 +1,170 @@
+{
+  "atomCode": "github-checks",
+  "name": "GitHub Checks",
+  "version": "1.0.0",
+  "description": "Publishes a GitHub check run for the commit, with line-level annotations: validates them before sending, appends more than 50 through the update endpoint as the API demands, and reads the run and its annotations back instead of trusting the status code.",
+  "execution": {
+    "packagePath": "github-checks.jar",
+    "language": "java",
+    "target": "$atom_java_path -cp github-checks.jar com.jenkinschina.atom.sdk.AtomRunner"
+  },
+  "input": {
+    "account": {
+      "label": "账号 / 组织（repo 写成 owner/name 时可留空）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "repo": {
+      "label": "仓库名（或 owner/name；留空取 GIT_URL）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "sha": {
+      "label": "提交 sha（留空取 GIT_COMMIT；完整 sha 由接口解析）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "name": {
+      "label": "检查名（留空取 JOB_NAME，再不行 jenkins/atom；支持 ${VAR}）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "status": {
+      "label": "状态",
+      "type": "selector",
+      "default": "completed",
+      "options": [
+        "queued",
+        "in_progress",
+        "completed"
+      ]
+    },
+    "conclusion": {
+      "label": "结论（留空按 BUILD_STATUS 推断；只在 completed 时有效）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "title": {
+      "label": "输出标题（留空按构建结果生成）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "summary": {
+      "label": "摘要（留空自动生成；支持 ${VAR}）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "summaryFile": {
+      "label": "摘要文件（相对工作区；填了就用它）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "text": {
+      "label": "详情正文（Markdown；支持 ${VAR}）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "textFile": {
+      "label": "详情正文文件（相对工作区，比如测试报告）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "annotationsFile": {
+      "label": "注解文件（JSON 数组，路径相对工作区）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "detailsUrl": {
+      "label": "详情链接（留空取 BUILD_URL）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "externalId": {
+      "label": "external_id（留空取 BUILD_TAG）",
+      "type": "vuex-input",
+      "default": ""
+    },
+    "apiUrl": {
+      "label": "API 地址",
+      "type": "vuex-input",
+      "default": "https://api.github.com"
+    },
+    "token": {
+      "label": "Token（凭据 id，Secret text）",
+      "type": "vuex-input",
+      "default": "",
+      "isSensitive": true
+    },
+    "preflight": {
+      "label": "写之前先核对凭据 / 仓库 / 提交",
+      "type": "boolean",
+      "default": "true"
+    },
+    "reuseExisting": {
+      "label": "同名检查在同一提交上就更新，不再建一个",
+      "type": "boolean",
+      "default": "true"
+    },
+    "verify": {
+      "label": "写完回读检查与注解（不是看状态码）",
+      "type": "boolean",
+      "default": "true"
+    },
+    "maxMessageSize": {
+      "label": "摘要/正文上限（字符，插件默认 65535）",
+      "type": "vuex-input",
+      "default": "65535"
+    }
+  },
+  "output": {
+    "status": {
+      "type": "string",
+      "description": "HTTP 状态码"
+    },
+    "id": {
+      "type": "string",
+      "description": "检查运行 id"
+    },
+    "name": {
+      "type": "string",
+      "description": "检查名"
+    },
+    "headSha": {
+      "type": "string",
+      "description": "实际挂到的提交 sha"
+    },
+    "conclusion": {
+      "type": "string",
+      "description": "结论；未完成时为 none"
+    },
+    "annotations": {
+      "type": "string",
+      "description": "发出的注解条数"
+    },
+    "checkUrl": {
+      "type": "string",
+      "description": "详情链接"
+    },
+    "apiUrl": {
+      "type": "string",
+      "description": "检查运行的对象地址"
+    },
+    "verified": {
+      "type": "string",
+      "description": "回读到的结论 / 状态；未开启校验为 not-checked"
+    },
+    "annotationsVerified": {
+      "type": "string",
+      "description": "回读到的注解条数"
+    }
+  },
+  "x-jenkins": {
+    "protocol": "jenkins-1",
+    "requires": {
+      "runner": ">=0.4.0"
+    },
+    "secrets": {
+      "token": ""
+    }
+  }
+}

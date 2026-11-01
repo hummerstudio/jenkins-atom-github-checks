@@ -1,0 +1,27 @@
+[
+ {
+  "path": "src/main.c",
+  "startLine": 12,
+  "endLine": 12,
+  "startColumn": 5,
+  "endColumn": 19,
+  "level": "failure",
+  "title": "use after free",
+  "message": "buffer is freed here and read two lines below",
+  "rawDetails": "cppcheck: memleak"
+ },
+ {
+  "path": "src/util.c",
+  "start_line": 40,
+  "end_line": 42,
+  "annotation_level": "warning",
+  "message": "unused parameter 'flags'"
+ },
+ {
+  "path": "README.md",
+  "startLine": 3,
+  "endLine": 3,
+  "level": "notice",
+  "message": "docs mention 1.0"
+ }
+]

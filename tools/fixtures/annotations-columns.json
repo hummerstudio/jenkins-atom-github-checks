@@ -1,0 +1,10 @@
+[
+ {
+  "path": "src/a.c",
+  "startLine": 1,
+  "endLine": 4,
+  "startColumn": 2,
+  "endColumn": 8,
+  "message": "columns span lines"
+ }
+]

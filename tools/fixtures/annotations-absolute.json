@@ -1,0 +1,8 @@
+[
+ {
+  "path": "/etc/passwd",
+  "startLine": 1,
+  "endLine": 1,
+  "message": "outside the repo"
+ }
+]

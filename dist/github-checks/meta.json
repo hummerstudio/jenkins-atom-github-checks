@@ -1,0 +1,13 @@
+{
+  "name": "GitHub Checks",
+  "summary": "Publishes a GitHub check run with line-level annotations, and reads it back.",
+  "author": "hummerstudio",
+  "license": "MIT",
+  "tags": [
+    "official-port",
+    "github-checks",
+    "checks-api",
+    "annotations"
+  ],
+  "homepage": "https://github.com/hummerstudio/jenkins-atom-github-checks"
+}

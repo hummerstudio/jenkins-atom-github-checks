@@ -1,0 +1,9 @@
+[
+ {
+  "path": "src/a.c",
+  "startLine": 1,
+  "endLine": 1,
+  "level": "fatal",
+  "message": "not a GitHub level"
+ }
+]
