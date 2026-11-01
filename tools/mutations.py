@@ -15,7 +15,16 @@ import tempfile
 
 REPO = pathlib.Path(__file__).resolve().parent.parent
 ATOM = "src/main/java/com/jenkinschina/atom/githubchecks/GitHubChecksAtom.java"
-SDK = sorted((REPO.parent / "jenkins-atom-sdk" / "target").glob("jenkins-atom-sdk-*.jar"))[-1]
+def find_sdk():
+    """The SDK is a sibling on a workstation and a subdirectory of the checkout in CI; build.sh knows both."""
+    for base in (REPO / "jenkins-atom-sdk", REPO.parent / "jenkins-atom-sdk"):
+        jars = sorted((base / "target").glob("jenkins-atom-sdk-*.jar"))
+        if jars:
+            return jars[-1]
+    return None
+
+
+SDK = find_sdk()
 
 MUTATIONS = [
     ("unstable-is-not-neutral", ATOM,
@@ -48,7 +57,9 @@ def run(name, relative, old, new):
         print("  SKIP %-32s (the line is gone: %s)" % (name, old.strip()[:50]))
         return None
     path.write_text(text.replace(old, new, 1), encoding="utf-8")
-    env = dict(os.environ, SDK_JAR=str(SDK))
+    env = dict(os.environ)
+    if SDK is not None:
+        env["SDK_JAR"] = str(SDK)
     result = subprocess.run(["bash", "tools/smoke.sh"], cwd=target, env=env,
                             capture_output=True, text=True)
     output = result.stdout + result.stderr
