@@ -80,8 +80,7 @@ the build (`context.getId(name)`). Everything else is mapping:
 ## 构建与验证
 
 ```bash
-./build.sh
-./tools/smoke.sh             # 9 组场景, 假 API 独立校验并保存状态
+mvn verify                   # 打包 + 9 组场景, 假 API 独立校验并保存状态 (failsafe)
 python3 tools/mutations.py   # 7 个植入的 bug, 每个都必须被抓红
 ```
 

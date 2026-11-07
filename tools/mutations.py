@@ -16,7 +16,7 @@ import tempfile
 REPO = pathlib.Path(__file__).resolve().parent.parent
 ATOM = "src/main/java/com/jenkinschina/atom/githubchecks/GitHubChecksAtom.java"
 def find_sdk():
-    """The SDK is a sibling on a workstation and a subdirectory of the checkout in CI; build.sh knows both."""
+    """The SDK is a sibling on a workstation and a subdirectory of the checkout in CI."""
     for base in (REPO / "jenkins-atom-sdk", REPO.parent / "jenkins-atom-sdk"):
         jars = sorted((base / "target").glob("jenkins-atom-sdk-*.jar"))
         if jars:
@@ -50,7 +50,7 @@ MUTATIONS = [
 def run(name, relative, old, new):
     work = pathlib.Path(tempfile.mkdtemp(prefix="mutate-" + name + "-"))
     target = work / "repo"
-    shutil.copytree(REPO, target, ignore=shutil.ignore_patterns(".git", "dist", "*.class"))
+    shutil.copytree(REPO, target, ignore=shutil.ignore_patterns(".git", "dist", "target", "*.class"))
     path = target / relative
     text = path.read_text(encoding="utf-8")
     if old not in text:
@@ -60,20 +60,21 @@ def run(name, relative, old, new):
     env = dict(os.environ)
     if SDK is not None:
         env["SDK_JAR"] = str(SDK)
-    result = subprocess.run(["bash", "tools/smoke.sh"], cwd=target, env=env,
+    result = subprocess.run(["mvn", "-B", "-ntp", "verify"], cwd=target, env=env,
                             capture_output=True, text=True)
     output = result.stdout + result.stderr
     if result.returncode == 0:
-        print("  MISSED %-30s smoke stayed green with the bug in place" % name)
+        print("  MISSED %-30s the tests stayed green with the bug in place" % name)
         return False
-    line = [l.strip() for l in output.splitlines() if l.strip().startswith("FAIL")]
+    line = [l.strip() for l in output.splitlines()
+            if l.strip().startswith("FAIL") or "GithubChecksIT." in l]
     print("  caught %-30s %s" % (name, line[-1] if line else output.strip().splitlines()[-1]))
     shutil.rmtree(work, ignore_errors=True)
     return True
 
 
 def main():
-    print("mutations against the smoke test (%d)" % len(MUTATIONS))
+    print("mutations against the test suite (%d)" % len(MUTATIONS))
     results = [run(*m) for m in MUTATIONS]
     missed = [r for r in results if r is False]
     if missed:
