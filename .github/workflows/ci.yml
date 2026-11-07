@@ -37,4 +37,4 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: github-checks-atom
-          path: atom/dist/github-checks/
+          path: atom/target/dist/github-checks/
