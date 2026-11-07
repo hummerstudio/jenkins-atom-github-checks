@@ -541,7 +541,7 @@ public class GitHubChecksAtom implements AtomTask {
                 throw new IllegalArgumentException(where + "startColumn and endColumn go together");
             }
             if (startColumn != null) {
-                if (startLine != endLine) {
+                if (!startLine.equals(endLine)) {
                     throw new IllegalArgumentException(where + "columns are only accepted on a single line");
                 }
                 if (startColumn < 1 || endColumn < startColumn) {
